@@ -27,10 +27,16 @@ chat_id = 1
 #Variáveis para armazenar hora das validações
 agora = datetime.datetime.now()
 meiodia = datetime.datetime(agora.year,agora.month,agora.day,12,00)
-valida_audios = datetime.datetime(agora.year,agora.month,agora.day,14,00)
+valida_audios = datetime.datetime(agora.year,agora.month,agora.day,13,00)
 
 #Montar nome do arquivo METADATA que será validado no dia
-ontem = datetime.datetime.now() - timedelta(days=1)
+dia_semana = date.today().weekday()
+
+if dia_semana == 0:
+    ontem = datetime.datetime.now() - timedelta(days=3)
+else:
+    ontem = datetime.datetime.now() - timedelta(days=1)
+
 metadata = ontem.strftime('%d%m%Y') + "_METADATA.xlsx"
 
 #Variáveis contadoras para validações
@@ -44,7 +50,7 @@ try:
     while value1 <= 0:
         sleep(30)
         #Abre a planilha e conta a quantidade de linhas em ATC/ CSF
-        data = pandas.read_excel("C:/temp/" + metadata)
+        data = pandas.read_excel("L:/COBRANCA_PRE/" + metadata)
         #Armazena quantidade de linhas de ATC/ CSF
         condicao = data['produto']
         atc = 0
@@ -69,14 +75,14 @@ try:
         #Valida hora atual para validações
         agora = datetime.datetime.now()
         #Especifica o diretório/ nome para busca do arquivo
-        os.chdir('C:/temp/')
+        os.chdir('L:/COBRANCA_PRE/Selecionados/')
         files = glob.glob(metadata)
 
         try:
             #Caso encontre o arquivo, irá terminar o looping e irá enviar a mensagem no Telegram
             if files != []:
                 #Abre a planilha e conta a quantidade de áudios selecionados        
-                data = pandas.read_excel("C:/temp/" + metadata)
+                data = pandas.read_excel("L:/COBRANCA_PRE/Selecionados/" + metadata)
                 qtd_linhas = data['Selecionados'].sum()
                 #Monta o texto e envia para o Telegram
                 msg = "Arquivo consta no SFTP com " + str(int(qtd_linhas)) + " áudios selecionados"
@@ -101,7 +107,7 @@ try:
         if agora > valida_audios:    
             audios = 0 
             #Realiza a contagem dos áudios no caminho
-            for path in pathlib.Path("C:/temp").iterdir():
+            for path in pathlib.Path("L:/COBRANCA_PRE/Selecionados/Importados").iterdir():
                 if path.is_file():
                     audios += 1
             #Monta o texto e envia para o Telegram
