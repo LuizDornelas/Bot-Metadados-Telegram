@@ -22,7 +22,7 @@ def send_message(token, chat_id, message):
 token = ''
 
 # id do chat que será enviado as mensagens
-chat_id = 1
+chat_id = -1
 
 #Variáveis para armazenar hora das validações
 agora = datetime.datetime.now()
